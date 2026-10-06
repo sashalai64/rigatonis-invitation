@@ -27,6 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -118,12 +119,14 @@
       </div>
 
       <h1 class="text-xl font-bold text-white mt-2 mb-1">Rigatoni is asking!</h1>
-      <p class="text-xs text-gray-400 mb-8">Choose wisely... Rigatoni is watching 👀</p>
+      <p id="subComment" class="text-xs text-rose-400 font-medium mb-8 transition-all duration-200 min-h-[20px]">
+        Choose wisely... Rigatoni is watching 👀
+      </p>
 
       <!-- Buttons Container -->
       <div id="btnContainer" class="relative w-full min-h-[110px] flex items-center justify-center gap-4">
-        <button id="yesBtn" onclick="nextStep(2)" class="px-8 py-3.5 bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/25 hover:scale-105 active:scale-95 transition-all text-base z-10">
-          YES! 💖
+        <button id="yesBtn" onclick="handleYesClick()" class="px-8 py-3.5 bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/25 hover:scale-105 active:scale-95 transition-all text-base z-10">
+          YES!
         </button>
 
         <button id="noBtn" class="px-8 py-3.5 bg-gray-800 hover:bg-gray-750 text-gray-300 font-semibold rounded-2xl border border-gray-700 transition-all text-base select-none touch-none">
@@ -170,7 +173,7 @@
       </div>
     </section>
 
-    <!-- STEP 3: Food Craving / Beli Quest -->
+    <!-- STEP 3: Food Craving / Beli Quest (Single Card + Tabs) -->
     <section id="step3" class="p-6 sm:p-8 hidden">
       <div class="text-center mb-6">
         <h2 class="text-xl sm:text-2xl font-bold text-white mb-1 leading-tight">
@@ -179,51 +182,60 @@
         <p class="text-xs text-gray-400">Pick your craving or let Rigatoni pick the spot.</p>
       </div>
 
-      <div class="space-y-5">
-        <!-- Option A: Specific Restaurant (First) -->
-        <div id="spotOptionSpecific" onclick="selectSpotType('specific')" class="p-4 rounded-2xl border-2 border-rose-500 bg-rose-500/10 cursor-pointer transition">
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="font-bold text-sm text-white flex items-center gap-2">
+      <!-- Tab Switcher Navigation -->
+      <div class="flex bg-gray-800/80 p-1.5 rounded-2xl border border-gray-700/60 mb-4">
+        <button type="button" id="tabSpecific" onclick="switchSpotTab('specific')" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-500 shadow transition flex items-center justify-center gap-1.5">
+          <span>📍</span> Exact Spot
+        </button>
+        <button type="button" id="tabCraving" onclick="switchSpotTab('craving')" class="flex-1 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5">
+          <span>🍽️</span> Pick Craving
+        </button>
+      </div>
+
+      <!-- Single Large Card Container -->
+      <div class="p-5 sm:p-6 rounded-2xl border-2 border-rose-500/40 bg-gray-800/40 backdrop-blur-md min-h-[220px] flex flex-col justify-between mb-4">
+        <!-- View 1: Specific Restaurant Input -->
+        <div id="viewSpecific" class="space-y-3">
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-white flex items-center gap-2 mb-1">
               <span>📍</span> I know the exact spot!
-            </span>
-            <span class="w-4 h-4 rounded-full border-2 border-rose-500 flex items-center justify-center">
-              <span id="dotSpecific" class="w-2 h-2 rounded-full bg-rose-500"></span>
-            </span>
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+              Got a dream spot in mind? (Even if it's in New York City, Rigatoni will clear his calendar ✈)
+            </p>
           </div>
-          <p class="text-xs text-gray-400 mb-2.5">
-            Got a dream spot in mind? (Even if it's in New York City, Rigatoni will clear his calendar ✈)
-          </p>
-          <input type="text" id="specificInput" placeholder="Restaurant name or link..." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" onclick="event.stopPropagation()">
+          <input type="text" id="specificInput" placeholder="Restaurant name or link..." class="w-full bg-gray-900/90 border border-gray-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500">
         </div>
 
-        <!-- Option B: Craving Badges -->
-        <div id="spotOptionCraving" onclick="selectSpotType('craving')" class="p-4 rounded-2xl border-2 border-gray-800 bg-gray-800/40 cursor-pointer transition">
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-bold text-sm text-white flex items-center gap-2">
+        <!-- View 2: Craving Selection Pills -->
+        <div id="viewCraving" class="hidden space-y-3">
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-white flex items-center gap-2 mb-1">
               <span>🍽️</span> I'll pick a craving, Rigatoni picks the place!
-            </span>
-            <span class="w-4 h-4 rounded-full border-2 border-gray-600 flex items-center justify-center">
-              <span id="dotCraving" class="w-2 h-2 rounded-full bg-rose-500 hidden"></span>
-            </span>
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              Tap any food cravings you're in the mood for:
+            </p>
           </div>
-
-          <!-- Craving Pills -->
-          <div id="cravingContainer" class="flex flex-wrap gap-1.5 mt-3 opacity-60 pointer-events-none transition-all">
-            <button type="button" onclick="toggleCraving(this, 'Italian')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍝 Italian</button>
-            <button type="button" onclick="toggleCraving(this, 'Japanese/Sushi')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍣 Japanese / Sushi</button>
-            <button type="button" onclick="toggleCraving(this, 'Korean BBQ')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🥩 Korean BBQ</button>
-            <button type="button" onclick="toggleCraving(this, 'Mexican/Tacos')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🌮 Mexican</button>
-            <button type="button" onclick="toggleCraving(this, 'Thai')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍜 Thai</button>
-            <button type="button" onclick="toggleCraving(this, 'French')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍷 French</button>
-            <button type="button" onclick="toggleCraving(this, 'Seafood')" class="craving-btn px-3 py-1.5 rounded-lg border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🦪 Seafood</button>
+          <div id="cravingContainer" class="flex flex-wrap gap-2">
+            <button type="button" onclick="toggleCraving(this, 'Italian')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍝 Italian</button>
+            <button type="button" onclick="toggleCraving(this, 'French')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍷 French</button>
+            <button type="button" onclick="toggleCraving(this, 'Steakhouse')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🥩 Steakhouse</button>
+            <button type="button" onclick="toggleCraving(this, 'Japanese/Sushi')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍣 Japanese / Sushi</button>
+            <button type="button" onclick="toggleCraving(this, 'Chinese/Taiwanese')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🥟 Chinese / Taiwanese</button>
+            <button type="button" onclick="toggleCraving(this, 'Vietnamese/Pho')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍜 Vietnamese / Pho</button>
+            <button type="button" onclick="toggleCraving(this, 'Korean BBQ')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🥩 Korean BBQ</button>
+            <button type="button" onclick="toggleCraving(this, 'Mexican/Tacos')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🌮 Mexican</button>
+            <button type="button" onclick="toggleCraving(this, 'Thai')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🍲 Thai</button>
+            <button type="button" onclick="toggleCraving(this, 'Seafood')" class="craving-btn px-3.5 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs text-gray-300 font-medium hover:border-rose-500 transition">🦪 Seafood</button>
           </div>
         </div>
+      </div>
 
-        <!-- Optional Notes -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1.5">Dietary notes or cravings? (Optional)</label>
-          <input type="text" id="dietaryNotes" placeholder="e.g., loves risotto, extra spicy, no cilantro..." class="w-full bg-gray-800/80 border border-gray-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-        </div>
+      <!-- Optional Dietary Notes -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1.5">Dietary notes or cravings? (Optional)</label>
+        <input type="text" id="dietaryNotes" placeholder="e.g., loves risotto, extra spicy, no cilantro..." class="w-full bg-gray-800/80 border border-gray-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
       </div>
 
       <div class="mt-6 pt-2">
@@ -279,7 +291,6 @@
           <path d="M 210 42 C 225 45, 238 52, 232 62 C 220 68, 205 62, 205 52 Z" fill="#8B4513"/>
           <circle cx="230" cy="52" r="5" fill="#111" />
           <path d="M 172 35 C 160 40, 155 70, 168 80 C 176 82, 180 65, 178 45 Z" fill="#5c2c0e"/>
-          <!-- Bigger Excited Eyes -->
           <circle cx="192" cy="42" r="10" fill="#FFFFFF" />
           <circle cx="192" cy="42" r="6" fill="#111111" />
           <circle cx="195" cy="39" r="2.5" fill="#FFFFFF" />
@@ -328,12 +339,25 @@
     
     let currentStep = 1;
     let noDodgeCount = 0;
-    const MAX_DODGES = 10;
     let selectedDates = [];
     let spotType = 'specific'; // 'specific' or 'craving'
     let selectedCravings = [];
 
-    // Specific Blackout Dates for October 2026
+    // Comments list for dynamic evasion steps
+    const evasionComments = [
+      "Choose wisely... Rigatoni is watching 👀",
+      "Hey! Rigatoni saw that cursor move! 🐾",
+      "Are you sure? Rigatoni is giving side-eye 🐶",
+      "Nice try! Rigatoni's tail stopped wagging 🚫",
+      "Oops! Button dodged... destiny wants you to say YES! ✨",
+      "Rigatoni is blocking the No button with his long body! 🌭",
+      "Error 404: 'No' is strictly unavailable! ❌",
+      "Rigatoni says: 'Pretty please? I'll bring treats!' 🦴",
+      "Warning: 'No' button shrinking rapidly! ⚠️",
+      "The button is practically gone... just tap YES!"
+    ];
+
+    // Blackout Dates for October 2026
     const blackoutComments = {
       "2026-10-07": "Ooops, Sasha's frolicking this day! 💃",
       "2026-10-08": "Sasha's busy conquering the world (or sleeping in) today! 🛌",
@@ -349,13 +373,20 @@
       renderCalendar();
     });
 
+    // Step 1 Yes Click with Confetti
+    function handleYesClick() {
+      if (window.confetti) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+      nextStep(2);
+    }
+
     // Step Navigation Handler
     function nextStep(step) {
       document.getElementById(`step${currentStep}`).classList.add("hidden");
       currentStep = step;
       document.getElementById(`step${currentStep}`).classList.remove("hidden");
 
-      // Update Header
       const backBtn = document.getElementById("backBtn");
       const stepBadge = document.getElementById("stepBadge");
 
@@ -383,34 +414,31 @@
       }
     }
 
-    // Step 1: No Button Evasion Mechanics
+    // Continuous No Button Evasion Mechanics
     function setupNoButtonInteractions() {
       const noBtn = document.getElementById("noBtn");
       const pupil = document.getElementById("dogPupil");
+      const subComment = document.getElementById("subComment");
 
       const handleNoAction = (e) => {
         if (e) e.preventDefault();
-        if (noDodgeCount < MAX_DODGES) {
-          noDodgeCount++;
-          
-          // Expand Eyes
-          const newRadius = 3.5 + (noDodgeCount * 0.55);
-          pupil.setAttribute("r", newRadius);
+        
+        noDodgeCount++;
+        subComment.innerText = evasionComments[Math.min(noDodgeCount, evasionComments.length - 1)];
+        
+        const newRadius = Math.min(10, 3.5 + (noDodgeCount * 0.55));
+        pupil.setAttribute("r", newRadius);
 
-          // Evasion logic
-          const isMobile = window.innerWidth < 640;
-          if (isMobile) {
-            const scale = Math.max(0, 1 - (noDodgeCount * 0.1));
-            noBtn.style.transform = `scale(${scale})`;
-            if (noDodgeCount >= MAX_DODGES) {
-              noBtn.style.display = "none";
-            }
-          } else {
-            const offsetX = (Math.random() - 0.5) * 220;
-            const offsetY = (Math.random() - 0.5) * 100;
-            noBtn.style.position = "relative";
-            noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-          }
+        const isMobile = window.innerWidth < 640;
+        if (isMobile) {
+          const scale = Math.max(0, 1 - (noDodgeCount * 0.1));
+          noBtn.style.transform = `scale(${scale})`;
+          if (scale <= 0.05) noBtn.style.display = "none";
+        } else {
+          const offsetX = (Math.random() - 0.5) * 260;
+          const offsetY = (Math.random() - 0.5) * 140;
+          noBtn.style.position = "relative";
+          noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         }
       };
 
@@ -424,12 +452,11 @@
       const grid = document.getElementById("calendarGrid");
       grid.innerHTML = "";
 
-      // October 2026 starts on Thursday (3 empty slots)
       const startOffset = 4;
       const totalDays = 31;
       const today = new Date();
       const currentYear = 2026;
-      const currentMonth = 9; // October (0-indexed)
+      const currentMonth = 9;
 
       for (let i = 0; i < startOffset; i++) {
         const emptyCell = document.createElement("div");
@@ -481,27 +508,24 @@
       document.getElementById("step2Next").disabled = selectedDates.length === 0;
     }
 
-    // Step 3: Spot Selection & Cravings
-    function selectSpotType(type) {
+    // Step 3 Tab Switcher Logic
+    function switchSpotTab(type) {
       spotType = type;
-      const specBox = document.getElementById("spotOptionSpecific");
-      const cravBox = document.getElementById("spotOptionCraving");
-      const dotSpec = document.getElementById("dotSpecific");
-      const dotCrav = document.getElementById("dotCraving");
-      const cravContainer = document.getElementById("cravingContainer");
+      const tabSpec = document.getElementById("tabSpecific");
+      const tabCrav = document.getElementById("tabCraving");
+      const viewSpec = document.getElementById("viewSpecific");
+      const viewCrav = document.getElementById("viewCraving");
 
       if (type === 'specific') {
-        specBox.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-500/10 cursor-pointer transition";
-        cravBox.className = "p-4 rounded-2xl border-2 border-gray-800 bg-gray-800/40 cursor-pointer transition";
-        dotSpec.classList.remove("hidden");
-        dotCrav.classList.add("hidden");
-        cravContainer.classList.add("opacity-60", "pointer-events-none");
+        tabSpec.className = "flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-500 shadow transition flex items-center justify-center gap-1.5";
+        tabCrav.className = "flex-1 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5";
+        viewSpec.classList.remove("hidden");
+        viewCrav.classList.add("hidden");
       } else {
-        cravBox.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-500/10 cursor-pointer transition";
-        specBox.className = "p-4 rounded-2xl border-2 border-gray-800 bg-gray-800/40 cursor-pointer transition";
-        dotCrav.classList.remove("hidden");
-        dotSpec.classList.add("hidden");
-        cravContainer.classList.remove("opacity-60", "pointer-events-none");
+        tabCrav.className = "flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-500 shadow transition flex items-center justify-center gap-1.5";
+        tabSpec.className = "flex-1 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5";
+        viewCrav.classList.remove("hidden");
+        viewSpec.classList.add("hidden");
       }
     }
 
@@ -540,7 +564,7 @@
       document.getElementById("summaryFood").innerText = getFormattedFoodSummary();
     }
 
-    // Form Submission Handler
+    // Form Submission Handler (Formspree AJAX Email)
     async function submitItinerary() {
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
@@ -554,7 +578,6 @@
       const foodSummary = getFormattedFoodSummary();
       const userNote = document.getElementById("userNote").value.trim();
 
-      // Formspree Payload
       const payload = {
         dates: formattedDates,
         food_preference: foodSummary,
@@ -568,10 +591,9 @@
           body: JSON.stringify(payload)
         });
       } catch (e) {
-        console.warn("Formspree submit fallback handled:", e);
+        console.warn("Formspree submit fallback:", e);
       }
 
-      // Populate Final Confirmation
       document.getElementById("finalDates").innerText = formattedDates;
       document.getElementById("finalFood").innerText = foodSummary;
       
@@ -580,7 +602,6 @@
         document.getElementById("finalNoteRow").classList.remove("hidden");
       }
 
-      // Setup iMessage Link
       const smsBody = `Knock knock! You've got a reservation 🍽️%0A%0ADates: ${encodeURIComponent(formattedDates)}%0AFood Preference: ${encodeURIComponent(foodSummary)}` + (userNote ? `%0ANote: ${encodeURIComponent(userNote)}` : '');
       document.getElementById("imessageBtn").href = `sms:${TARGET_PHONE}&body=${smsBody}`;
 
@@ -612,6 +633,7 @@
       selectedCravings = [];
       noDodgeCount = 0;
       spotType = 'specific';
+      document.getElementById("subComment").innerText = evasionComments[0];
       document.getElementById("specificInput").value = "";
       document.getElementById("dietaryNotes").value = "";
       document.getElementById("userNote").value = "";
@@ -619,7 +641,7 @@
       document.getElementById("noBtn").style.display = "block";
       document.getElementById("dogPupil").setAttribute("r", "3.5");
       renderCalendar();
-      selectSpotType('specific');
+      switchSpotTab('specific');
       nextStep(1);
     }
   </script>
