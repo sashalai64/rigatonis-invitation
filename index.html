@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rigatoni's Invitation 🐾</title>
+    <meta property="og:title" content="Rigatoni's Invitation 🐾" />
+    <meta property="og:description" content="A special invitation for Kelly from Sasha & Rigatoni" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#090D16',
+                        cardBg: '#131C2E',
+                        accentPink: '#F43F5E',
+                        accentRose: '#FB7185',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 25px rgba(244, 63, 94, 0.25)',
+                        'card': '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #070A12;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(225, 29, 72, 0.06) 0px, transparent 50%);
+            min-height: 100vh;
+            color: #F8FAFC;
+        }
+
+        .dark-card {
+            background: rgba(19, 28, 46, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .pupil {
+            transition: r 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Continuous Tail Wiggle Animation */
+        @keyframes wag-tail {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-18deg); }
+            40% { transform: rotate(12deg); }
+            60% { transform: rotate(-14deg); }
+            80% { transform: rotate(8deg); }
+        }
+
+        .animate-tail-wiggle {
+            transform-origin: 55px 110px;
+            animation: wag-tail 0.7s ease-in-out infinite;
+        }
+
+        /* Speech Bubble Arrow */
+        .speech-bubble {
+            position: relative;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.95) transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Blackout Date Striped Effect */
+        .blackout-date {
+            background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03) 6px, transparent 6px, transparent 12px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 antialiased">
+
+    <div class="w-full max-w-lg mx-auto">
+        
+        <!-- Top Navigation Bar -->
+        <div id="top-nav" class="flex justify-between items-center mb-4 px-1 min-h-[32px]">
+            <button id="btn-global-back" onclick="goBack()" class="hidden text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back
+            </button>
+            <div id="app-title-badge" class="text-xs font-bold text-slate-300 tracking-wide flex items-center gap-1.5 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800">
+                <span>🐾</span> Rigatoni's Invitation
+            </div>
+            <div id="step-indicator-badge" class="text-xs font-semibold text-rose-400/90 ml-auto bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full">
+                Step 1 of 4
+            </div>
+        </div>
+
+        <!-- Main Card Container -->
+        <main class="dark-card rounded-3xl p-6 sm:p-10 shadow-card relative overflow-hidden min-h-[580px] flex flex-col justify-between transition-all duration-300">
+            
+            <!-- Ambient Lighting -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full filter blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-accentPink/10 rounded-full filter blur-3xl pointer-events-none"></div>
+
+            <!-- ================= STEP 1: PROPOSAL WITH RIGATONI ================= -->
+            <section id="step-1" class="step-panel flex flex-col items-center justify-between h-full my-auto space-y-6">
+                
+                <!-- Speech Balloon from Rigatoni -->
+                <div class="speech-bubble bg-white/95 text-slate-900 px-6 py-3.5 rounded-2xl shadow-xl max-w-xs text-center border border-white">
+                    <p class="text-xs font-bold text-rose-600 uppercase tracking-wider mb-0.5">Rigatoni asks:</p>
+                    <p class="text-base font-extrabold leading-snug">"Kelly, would you like to go out on a date with Sasha?"</p>
+                </div>
+
+                <!-- Rigatoni Dachshund SVG -->
+                <div class="relative w-full max-w-[270px] h-44 flex items-center justify-center my-2">
+                    <svg id="rigatoni-svg" class="w-full h-full drop-shadow-xl" viewBox="0 0 300 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g class="animate-tail-wiggle">
+                            <path d="M 55 110 Q 30 75 15 80 Q 10 85 18 95 Q 32 105 45 115 Z" fill="#8B4513"/>
+                        </g>
+
+                        <path d="M 50 110 Q 80 100 150 105 L 210 105 Q 230 105 245 115 L 245 135 L 225 135 L 225 120 L 140 120 L 140 135 L 120 135 L 120 120 L 70 120 L 70 135 L 50 135 Z" fill="#A0522D"/>
+                        <path d="M 195 103 Q 210 103 220 115 L 190 115 Z" fill="#F43F5E"/> 
+                        
+                        <path d="M 200 110 Q 210 70 240 65 Q 275 65 285 85 Q 290 95 270 105 Q 235 115 200 110 Z" fill="#A0522D"/>
+                        <path d="M 265 85 Q 285 88 288 93 Q 285 98 268 98 Z" fill="#8B4513"/>
+                        <ellipse cx="284" cy="91" rx="4" ry="3" fill="#1E1E1E"/>
+
+                        <path d="M 220 68 Q 200 70 195 100 Q 192 115 210 110 Q 225 90 230 75 Z" fill="#6B3410"/>
+
+                        <!-- Left Eye & Scalable Pupil -->
+                        <ellipse cx="238" cy="80" rx="9" ry="11" fill="white" stroke="#1E1E1E" stroke-width="1.5"/>
+                        <circle id="pupil-left" class="pupil" cx="239" cy="80" r="4.5" fill="#1E1E1E"/>
+                        <circle id="shine-left" cx="241" cy="78" r="1.5" fill="white"/>
+
+                        <!-- Right Eye & Scalable Pupil -->
+                        <ellipse cx="258" cy="80" rx="9" ry="11" fill="white" stroke="#1E1E1E" stroke-width="1.5"/>
+                        <circle id="pupil-right" class="pupil" cx="259" cy="80" r="4.5" fill="#1E1E1E"/>
+                        <circle id="shine-right" cx="261" cy="78" r="1.5" fill="white"/>
+
+                        <circle cx="212" cy="118" r="4" fill="#F59E0B"/>
+                        <path d="M 270 98 Q 265 104 258 101" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    </svg>
+
+                    <div class="absolute -bottom-2 bg-slate-900/90 border border-slate-700/80 px-3 py-0.5 rounded-full text-[11px] font-semibold text-slate-300 flex items-center gap-1 shadow-md">
+                        <span>🐶</span> Rigatoni
+                    </div>
+                </div>
+
+                <p id="rigatoni-reaction-text" class="text-xs font-medium text-rose-400 h-5 transition-all text-center">
+                    Rigatoni is doing a little tail wiggle! 🐾
+                </p>
+
+                <!-- Choice Area -->
+                <div id="button-arena" class="relative w-full h-20 flex items-center justify-center gap-6 mt-2">
+                    <button id="btn-yes" onclick="handleYesClick()" class="z-10 px-8 py-3.5 bg-gradient-to-r from-rose-500 to-accentPink hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-base rounded-xl shadow-glow hover:scale-105 transition-all flex items-center gap-2">
+                        <span>YES!</span>
+                        <i data-lucide="heart" class="w-4 h-4 fill-current text-white"></i>
+                    </button>
+
+                    <button id="btn-no" class="z-20 px-6 py-3.5 bg-slate-800/90 hover:bg-slate-700 text-slate-400 font-semibold text-sm rounded-xl border border-slate-700/60 transition-all duration-200 flex items-center gap-1 select-none">
+                        <span>no</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= STEP 2: DINNER DATE CALENDAR ================= -->
+            <section id="step-2" class="step-panel hidden flex-col justify-between h-full space-y-5">
+                <div class="text-center space-y-1.5">
+                    <span class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                        <i data-lucide="utensils" class="w-3 h-3"></i> Rigatoni's Invitation
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-display font-bold text-white">What date works best for you?</h2>
+                    <p class="text-xs text-rose-300/80 font-medium leading-relaxed">
+                        Multiple dates supported! If multiple dates are picked, it will count as multiple dates 😉
+                    </p>
+                </div>
+
+                <!-- Minimal Dark Calendar -->
+                <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 shadow-inner space-y-3">
+                    <div class="flex items-center justify-between px-2">
+                        <button onclick="changeMonth(-1)" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        </button>
+                        <h3 id="calendar-month-year" class="font-bold text-slate-200 text-sm">October 2026</h3>
+                        <button onclick="changeMonth(1)" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-500">
+                        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                    </div>
+
+                    <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 text-center text-xs">
+                        <!-- Dynamic cells -->
+                    </div>
+                </div>
+
+                <!-- Selected Chips -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Selected Nights:</span>
+                        <span id="selected-count-badge" class="font-bold text-rose-400">0 selected</span>
+                    </div>
+                    <div id="selected-dates-chips" class="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-slate-900/60 rounded-xl border border-slate-800/80">
+                        <span class="text-xs text-slate-500 italic self-center">Tap dates above to choose...</span>
+                    </div>
+                </div>
+
+                <button id="btn-step-2-next" onclick="goToStep(3)" disabled class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-accentPink text-white font-bold rounded-xl shadow-glow disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-95 transition flex items-center justify-center gap-2 text-sm">
+                    <span>Next: Food Options</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </section>
+
+            <!-- ================= STEP 3: BELI RESTAURANTS ================= -->
+            <section id="step-3" class="step-panel hidden flex-col justify-between h-full space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl sm:text-2xl font-display font-bold text-white leading-snug">Let's get you to reach 100 restaurants on Beli 📈</h2>
+                    <p class="text-xs text-slate-400">Pick your craving or let Rigatoni pick the spot.</p>
+                </div>
+
+                <!-- Mode Switcher -->
+                <div class="grid grid-cols-2 gap-2 p-1 bg-slate-900/90 rounded-xl text-xs font-semibold border border-slate-800">
+                    <button id="tab-specific" onclick="setFoodMode('specific')" class="py-2 px-3 rounded-lg bg-slate-800 text-white shadow-sm transition">
+                        🎯 Specific Restaurant
+                    </button>
+                    <button id="tab-surprise" onclick="setFoodMode('surprise')" class="py-2 px-3 rounded-lg text-slate-400 hover:text-white transition">
+                        ✨ Choose Food Type
+                    </button>
+                </div>
+
+                <!-- Specific Restaurant Field (Shown First) -->
+                <div id="food-panel-specific" class="space-y-2">
+                    <label for="restaurant-input" class="block text-xs font-bold text-slate-300 leading-normal">
+                        Specific Restaurant Spot:
+                    </label>
+                    <p class="text-[11px] text-slate-400 italic">
+                        Got a dream spot in mind? (Even if it's in New York City, Rigatoni will clear his calendar ✈️)
+                    </p>
+                    <div class="relative">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 absolute left-3 top-3"></i>
+                        <input id="restaurant-input" type="text" placeholder="e.g. Carbone, L'Industrie, Rubirosa..." class="w-full pl-9 pr-3 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <!-- Cravings Grid -->
+                <div id="food-panel-surprise" class="hidden space-y-3.5 text-xs">
+                    <div class="space-y-2">
+                        <label class="font-bold text-slate-300 block">What are you craving?</label>
+                        <div id="cuisine-tags-container" class="grid grid-cols-2 gap-2">
+                            <!-- Streamlined options -->
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="font-bold text-slate-300 block">Atmosphere / Vibe:</label>
+                        <div id="vibe-pills-container" class="flex flex-wrap gap-1.5">
+                            <!-- Default: Anything works -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dietary Notes -->
+                <div class="space-y-1.5">
+                    <label for="food-notes" class="block text-xs font-bold text-slate-300">
+                        Dietary notes or cravings? (Optional)
+                    </label>
+                    <input id="food-notes" type="text" placeholder="e.g., loves risotto, extra spicy, no cilantro..." class="w-full px-3 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+                </div>
+
+                <button onclick="goToStep(4)" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-accentPink text-white font-bold rounded-xl shadow-glow hover:opacity-95 transition text-xs flex items-center justify-center gap-2">
+                    <span>Review Plan</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </section>
+
+            <!-- ================= STEP 4: SUMMARY ================= -->
+            <section id="step-4" class="step-panel hidden flex-col justify-between h-full space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white">Date Plan Summary 🎉</h2>
+                    <p class="text-xs text-slate-400">Review your choices before submitting to Sasha</p>
+                </div>
+
+                <!-- Rigatoni Wagging Tail Render on Summary Page -->
+                <div class="flex flex-col items-center justify-center bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3">
+                    <div class="w-36 h-24 relative flex items-center justify-center">
+                        <svg class="w-full h-full drop-shadow-md" viewBox="0 0 300 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g class="animate-tail-wiggle">
+                                <path d="M 55 110 Q 30 75 15 80 Q 10 85 18 95 Q 32 105 45 115 Z" fill="#8B4513"/>
+                            </g>
+                            <path d="M 50 110 Q 80 100 150 105 L 210 105 Q 230 105 245 115 L 245 135 L 225 135 L 225 120 L 140 120 L 140 135 L 120 135 L 120 120 L 70 120 L 70 135 L 50 135 Z" fill="#A0522D"/>
+                            <path d="M 195 103 Q 210 103 220 115 L 190 115 Z" fill="#F43F5E"/> 
+                            <path d="M 200 110 Q 210 70 240 65 Q 275 65 285 85 Q 290 95 270 105 Q 235 115 200 110 Z" fill="#A0522D"/>
+                            <path d="M 265 85 Q 285 88 288 93 Q 285 98 268 98 Z" fill="#8B4513"/>
+                            <ellipse cx="284" cy="91" rx="4" ry="3" fill="#1E1E1E"/>
+                            <path d="M 220 68 Q 200 70 195 100 Q 192 115 210 110 Q 225 90 230 75 Z" fill="#6B3410"/>
+                            <ellipse cx="238" cy="80" rx="7" ry="9" fill="white" stroke="#1E1E1E"/>
+                            <circle cx="239" cy="80" r="4" fill="#1E1E1E"/>
+                            <ellipse cx="258" cy="80" rx="7" ry="9" fill="white" stroke="#1E1E1E"/>
+                            <circle cx="259" cy="80" r="4" fill="#1E1E1E"/>
+                            <path d="M 270 98 Q 265 104 258 101" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                        </svg>
+                    </div>
+
+                    <div class="speech-bubble bg-white/95 text-slate-900 px-4 py-2 rounded-xl text-center border border-white max-w-xs shadow-md">
+                        <p class="text-xs font-extrabold text-slate-900 leading-snug">
+                            "Rigatoni approves this itinerary! 🐾"
+                        </p>
+                    </div>
+
+                    <!-- Spaced out Summary Details -->
+                    <div class="w-full space-y-3 text-xs pt-2 border-t border-slate-800">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="calendar" class="w-4 h-4 text-rose-400 mt-0.5 shrink-0"></i>
+                            <div>
+                                <span class="font-bold text-slate-300 block mb-0.5">Dinner Dates:</span>
+                                <p id="summary-dates-text" class="text-slate-400 font-medium"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="utensils" class="w-4 h-4 text-rose-400 mt-0.5 shrink-0"></i>
+                            <div>
+                                <span class="font-bold text-slate-300 block mb-0.5">Food Preference:</span>
+                                <p id="summary-food-text" class="text-slate-400 font-medium"></p>
+                            </div>
+                        </div>
+
+                        <div id="summary-notes-row" class="flex items-start gap-3 hidden">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-rose-400 mt-0.5 shrink-0"></i>
+                            <div>
+                                <span class="font-bold text-slate-300 block mb-0.5">Dietary / Cravings:</span>
+                                <p id="summary-notes-text" class="text-slate-400 font-medium"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note to Sasha or Rigatoni -->
+                <div class="space-y-1.5">
+                    <label for="custom-message-input" class="block text-xs font-bold text-slate-300">
+                        Note to Sasha or Rigatoni (Optional):
+                    </label>
+                    <textarea id="custom-message-input" rows="2" placeholder="e.g. 'Can't wait!' or 'Rigatoni better be there too!'" class="w-full px-3 py-2 bg-slate-900/90 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                </div>
+
+                <button id="btn-submit-main" onclick="submitItinerary()" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-accentPink text-white font-extrabold text-sm rounded-xl shadow-glow hover:opacity-95 transition flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>Confirm & Submit Itinerary</span>
+                </button>
+            </section>
+
+            <!-- ================= STEP 5: TEASING FINAL SCREEN ================= -->
+            <section id="step-5" class="step-panel hidden flex-col justify-between items-center text-center h-full my-auto space-y-5 py-2">
+                <div class="space-y-3">
+                    <div class="inline-flex p-4 bg-rose-500/10 rounded-full text-rose-400 border border-rose-500/20 mb-1">
+                        <i data-lucide="sparkles" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-display font-extrabold text-white">You will be in touch soon! 🥂</h2>
+                    
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm mx-auto bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                        Sasha & Rigatoni have received your choices! <br><br>
+                        <span class="text-rose-400 font-semibold">Executive concierge will follow up shortly to finalize reservations. 📲</span>
+                    </p>
+                </div>
+
+                <!-- Action Options: iMessage / Copy / Start Over -->
+                <div class="w-full space-y-2.5">
+                    <button onclick="sendViaIMessage()" class="w-full py-3 bg-gradient-to-r from-rose-500 to-accentPink text-white font-extrabold text-xs rounded-xl shadow-glow hover:opacity-95 transition flex items-center justify-center gap-2">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Send via iMessage 💬</span>
+                    </button>
+
+                    <button onclick="copySummaryToClipboard()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                        <i data-lucide="copy" class="w-3.5 h-3.5 text-rose-400"></i>
+                        <span>Copy Itinerary to Clipboard 📋</span>
+                    </button>
+
+                    <button onclick="restartApp()" class="w-full py-2 text-xs text-slate-500 hover:text-slate-400 transition flex items-center justify-center gap-1">
+                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                        <span>Start Over</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-notification" class="fixed bottom-6 max-w-xs sm:max-w-md mx-auto bg-slate-900 border border-rose-500/40 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 z-50">
+        <i id="toast-icon" data-lucide="info" class="w-4 h-4 text-rose-400 shrink-0"></i>
+        <span id="toast-message" class="leading-normal">Notification</span>
+    </div>
+
+    <script>
+        const SASHA_PHONE_NUMBER = ""; // Set your phone number here e.g. "+15550192834"
+        const FORM_SUBMIT_WEBHOOK_URL = ""; 
+
+        let currentStep = 1;
+        let noClickCount = 0;
+        const maxNoInteractions = 10;
+
+        // Calendar State (October 2026 default)
+        const today = new Date(2026, 9, 5); // October 5, 2026
+        let currentDate = new Date(2026, 9, 1);
+        let selectedDates = [];
+
+        // Blackout Date Comments Map
+        const blackoutComments = {
+            '2026-10-07': "Ooops, Sasha's frolicking this day! 💃",
+            '2026-10-08': "Sasha's busy conquering the world (or sleeping in) today! 🛌",
+            '2026-10-17': "Rigatoni says Sasha has top secret classified plans today! 🕵️",
+            '2026-10-23': "Sasha is off on an adventure this day! 🚀",
+            '2026-10-24': "Unavailable! Rigatoni booked Sasha for intensive belly rubs! 🐾"
+        };
+
+        // Food & Vibe Options
+        let foodSelectionMode = 'specific';
+        const foodCategories = ['Italian 🍝', 'Sushi / Asian 🍣', 'Mexican 🌮', 'Steakhouse 🥩', 'French 🥐', 'Mediterranean 🥙', 'Comfort Food 🍔', 'Korean BBQ 🥩'];
+        let selectedCuisines = [];
+
+        const vibeOptions = ['Anything works!', 'Casual & Cozy', 'Trendy & Fun', 'Fancy & Romantic'];
+        let selectedVibe = 'Anything works!';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            initStep1NoButtonLogic();
+            renderCuisines();
+            renderVibes();
+            renderCalendar();
+        });
+
+        function initStep1NoButtonLogic() {
+            const btnNo = document.getElementById('btn-no');
+
+            btnNo.addEventListener('mouseenter', () => {
+                if (window.innerWidth >= 640) {
+                    registerNoInteraction();
+                    moveNoButtonEvading();
+                }
+            });
+
+            btnNo.addEventListener('click', () => {
+                registerNoInteraction();
+                if (window.innerWidth < 640) {
+                    shrinkNoButton();
+                } else {
+                    moveNoButtonEvading();
+                }
+            });
+        }
+
+        function registerNoInteraction() {
+            if (noClickCount < maxNoInteractions) {
+                noClickCount++;
+                scalePupils(noClickCount);
+                updateRigatoniReactionText();
+            }
+        }
+
+        function scalePupils(count) {
+            const leftPupil = document.getElementById('pupil-left');
+            const rightPupil = document.getElementById('pupil-right');
+            const newRadius = 4.5 + (count * 0.45);
+            leftPupil.setAttribute('r', newRadius);
+            rightPupil.setAttribute('r', newRadius);
+        }
+
+        function updateRigatoniReactionText() {
+            const reactionText = document.getElementById('rigatoni-reaction-text');
+            const prompts = [
+                "Rigatoni is doing a little tail wiggle! 🐾",
+                "Rigatoni's eyes are getting bigger! 🥺",
+                "Wait, are you sure? Look at those eyes! 🐶",
+                "Rigatoni is doing his ultimate puppy eyes...",
+                "The eyes keep growing! 🥺✨",
+                "Rigatoni can't believe this is happening!",
+                "Look how big Rigatoni's eyes are now! 👁️👁️",
+                "Rigatoni says: 'Please click YES!' ❤️",
+                "Rigatoni's puppy eyes are at MAXIMUM capacity!",
+                "The 'no' button is practically gone now!"
+            ];
+            reactionText.innerText = prompts[Math.min(noClickCount, prompts.length - 1)];
+        }
+
+        function moveNoButtonEvading() {
+            const btnNo = document.getElementById('btn-no');
+            const arena = document.getElementById('button-arena');
+            const arenaRect = arena.getBoundingClientRect();
+
+            const maxX = (arenaRect.width / 2) - 40;
+            const maxY = 30;
+
+            const randomX = (Math.random() * maxX * 2) - maxX;
+            const randomY = (Math.random() * maxY * 2) - maxY;
+
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        function shrinkNoButton() {
+            const btnNo = document.getElementById('btn-no');
+            const scale = Math.max(0, 1 - (noClickCount * 0.1));
+            if (scale === 0) {
+                btnNo.style.display = 'none';
+            } else {
+                btnNo.style.transform = `scale(${scale})`;
+            }
+        }
+
+        function handleYesClick() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f43f5e', '#fb7185', '#ffffff']
+            });
+            setTimeout(() => goToStep(2), 400);
+        }
+
+        function goToStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.step-panel').forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+            });
+
+            const activePanel = document.getElementById(`step-${step}`);
+            activePanel.classList.remove('hidden');
+            activePanel.classList.add('flex');
+
+            const backBtn = document.getElementById('btn-global-back');
+            const stepBadge = document.getElementById('step-indicator-badge');
+
+            if (step > 1 && step <= 4) {
+                backBtn.classList.remove('hidden');
+                stepBadge.innerText = `Step ${step} of 4`;
+                stepBadge.classList.remove('hidden');
+            } else {
+                backBtn.classList.add('hidden');
+                if (step === 5) stepBadge.classList.add('hidden');
+            }
+
+            if (step === 4) populateSummary();
+            lucide.createIcons();
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-days-grid');
+            const monthYearHeader = document.getElementById('calendar-month-year');
+            grid.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthYearHeader.innerText = `${monthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const thisCellDate = new Date(year, month, day);
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                const isPast = thisCellDate < today;
+                const isBlackout = blackoutComments.hasOwnProperty(dateStr);
+                const isSelected = selectedDates.includes(dateStr);
+
+                const dayCell = document.createElement('button');
+                dayCell.type = 'button';
+
+                if (isPast) {
+                    dayCell.className = "h-8 rounded-lg font-medium text-slate-600 bg-slate-900/40 border border-slate-800/40 flex items-center justify-center text-xs opacity-50 cursor-pointer hover:border-slate-600 transition";
+                    dayCell.innerText = day;
+                    dayCell.onclick = () => showToast("I wish we could go back in time! ⏳ Past dates are off-limits.");
+                } else if (isBlackout) {
+                    dayCell.className = "h-8 rounded-lg font-bold text-rose-300/60 blackout-date bg-slate-900 border border-rose-950/60 flex items-center justify-center text-xs relative cursor-pointer hover:border-rose-500/80 transition";
+                    dayCell.innerHTML = `<span>${day}</span><span class="absolute -top-1 -right-1 text-[9px]">🔒</span>`;
+                    dayCell.onclick = () => showToast(blackoutComments[dateStr]);
+                } else if (isSelected) {
+                    dayCell.className = "h-8 rounded-lg font-extrabold bg-rose-500 text-white shadow-glow scale-105 flex items-center justify-center text-xs transition";
+                    dayCell.innerText = day;
+                    dayCell.onclick = () => toggleDateSelection(dateStr);
+                } else {
+                    dayCell.className = "h-8 rounded-lg font-semibold hover:bg-slate-800 text-slate-300 flex items-center justify-center text-xs transition";
+                    dayCell.innerText = day;
+                    dayCell.onclick = () => toggleDateSelection(dateStr);
+                }
+
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function toggleDateSelection(dateStr) {
+            if (selectedDates.includes(dateStr)) {
+                selectedDates = selectedDates.filter(d => d !== dateStr);
+            } else {
+                selectedDates.push(dateStr);
+            }
+            selectedDates.sort();
+            renderCalendar();
+            updateSelectedDatesChips();
+        }
+
+        function updateSelectedDatesChips() {
+            const container = document.getElementById('selected-dates-chips');
+            const badge = document.getElementById('selected-count-badge');
+            const nextBtn = document.getElementById('btn-step-2-next');
+
+            badge.innerText = `${selectedDates.length} selected`;
+            nextBtn.disabled = selectedDates.length === 0;
+
+            if (selectedDates.length === 0) {
+                container.innerHTML = `<span class="text-xs text-slate-500 italic self-center">Tap dates above to choose...</span>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            selectedDates.forEach(dateStr => {
+                const dateObj = new Date(dateStr + 'T00:00:00');
+                const formatted = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+                const chip = document.createElement('div');
+                chip.className = "inline-flex items-center gap-1 bg-slate-800 border border-slate-700 text-rose-300 px-2 py-0.5 rounded-md text-xs font-semibold";
+                chip.innerHTML = `
+                    <span>${formatted}</span>
+                    <button onclick="toggleDateSelection('${dateStr}')" class="text-slate-400 hover:text-white transition">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                `;
+                container.appendChild(chip);
+            });
+            lucide.createIcons();
+        }
+
+        function renderCuisines() {
+            const container = document.getElementById('cuisine-tags-container');
+            container.innerHTML = '';
+
+            foodCategories.forEach(item => {
+                const isSelected = selectedCuisines.includes(item);
+                const tag = document.createElement('button');
+                tag.type = 'button';
+                tag.className = `p-2 rounded-xl text-xs font-medium border text-left transition ${
+                    isSelected 
+                        ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold' 
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`;
+                tag.innerText = item;
+                tag.onclick = () => {
+                    if (selectedCuisines.includes(item)) {
+                        selectedCuisines = selectedCuisines.filter(c => c !== item);
+                    } else {
+                        selectedCuisines.push(item);
+                    }
+                    renderCuisines();
+                };
+                container.appendChild(tag);
+            });
+        }
+
+        function renderVibes() {
+            const container = document.getElementById('vibe-pills-container');
+            container.innerHTML = '';
+
+            vibeOptions.forEach(vibe => {
+                const isSelected = selectedVibe === vibe;
+                const pill = document.createElement('button');
+                pill.type = 'button';
+                pill.className = `px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+                    isSelected 
+                        ? 'bg-rose-500 text-white border-rose-500 shadow-sm font-bold' 
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`;
+                pill.innerText = vibe;
+                pill.onclick = () => {
+                    selectedVibe = vibe;
+                    renderVibes();
+                };
+                container.appendChild(pill);
+            });
+        }
+
+        function setFoodMode(mode) {
+            foodSelectionMode = mode;
+            const tabSurprise = document.getElementById('tab-surprise');
+            const tabSpecific = document.getElementById('tab-specific');
+            const panelSurprise = document.getElementById('food-panel-surprise');
+            const panelSpecific = document.getElementById('food-panel-specific');
+
+            if (mode === 'surprise') {
+                tabSurprise.className = 'py-2 px-3 rounded-lg bg-slate-800 text-white shadow-sm transition';
+                tabSpecific.className = 'py-2 px-3 rounded-lg text-slate-400 hover:text-white transition';
+                panelSurprise.classList.remove('hidden');
+                panelSpecific.classList.add('hidden');
+            } else {
+                tabSpecific.className = 'py-2 px-3 rounded-lg bg-slate-800 text-white shadow-sm transition';
+                tabSurprise.className = 'py-2 px-3 rounded-lg text-slate-400 hover:text-white transition';
+                panelSpecific.classList.remove('hidden');
+                panelSurprise.classList.add('hidden');
+            }
+        }
+
+        function populateSummary() {
+            const summaryDatesText = document.getElementById('summary-dates-text');
+            const formattedDates = selectedDates.map(d => {
+                const dateObj = new Date(d + 'T00:00:00');
+                return dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            }).join(', ');
+            summaryDatesText.innerText = formattedDates || 'None selected';
+
+            const summaryFoodText = document.getElementById('summary-food-text');
+            if (foodSelectionMode === 'specific') {
+                const restInput = document.getElementById('restaurant-input').value.trim();
+                summaryFoodText.innerText = restInput ? `Spot: "${restInput}"` : "Specific spot requested!";
+            } else {
+                const cuisines = selectedCuisines.length > 0 ? selectedCuisines.join(', ') : 'Any craving';
+                summaryFoodText.innerText = `${cuisines} (Vibe: ${selectedVibe})`;
+            }
+
+            const notesInput = document.getElementById('food-notes').value.trim();
+            const notesRow = document.getElementById('summary-notes-row');
+            const notesText = document.getElementById('summary-notes-text');
+            if (notesInput) {
+                notesRow.classList.remove('hidden');
+                notesText.innerText = notesInput;
+            } else {
+                notesRow.classList.add('hidden');
+            }
+        }
+
+        function generateSummaryText() {
+            const datesFormatted = selectedDates.map(d => {
+                const dateObj = new Date(d + 'T00:00:00');
+                return dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            }).join(', ');
+
+            let foodDetail = "";
+            if (foodSelectionMode === 'specific') {
+                const spot = document.getElementById('restaurant-input').value.trim();
+                foodDetail = spot ? `Spot: ${spot}` : "Specific restaurant picked";
+            } else {
+                const cuisines = selectedCuisines.length > 0 ? selectedCuisines.join(', ') : 'Open to anything';
+                foodDetail = `Cravings: ${cuisines} (Vibe: ${selectedVibe})`;
+            }
+
+            const dietaryNotes = document.getElementById('food-notes').value.trim();
+            const customMessage = document.getElementById('custom-message-input').value.trim();
+
+            let result = `Hey Sasha! I'd love to go out for dinner with you! 🥰🐾\n\n📅 Dates: ${datesFormatted}\n🍽️️ Food: ${foodDetail}`;
+            
+            if (dietaryNotes) result += `\n✨ Dietary/Notes: ${dietaryNotes}`;
+            if (customMessage) result += `\n💬 Note for you & Rigatoni: "${customMessage}"`;
+
+            return result;
+        }
+
+        async function submitItinerary() {
+            const submitBtn = document.getElementById('btn-submit-main');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
+
+            const payloadText = generateSummaryText();
+
+            if (FORM_SUBMIT_WEBHOOK_URL) {
+                try {
+                    await fetch(FORM_SUBMIT_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: payloadText })
+                    });
+                } catch (e) {
+                    console.log("Webhook submission error:", e);
+                }
+            }
+
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.5 },
+                colors: ['#f43f5e', '#fb7185', '#ffffff']
+            });
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Confirm & Submit Itinerary";
+                goToStep(5);
+            }, 600);
+        }
+
+        function sendViaIMessage() {
+            const bodyText = generateSummaryText();
+            const encodedText = encodeURIComponent(bodyText);
+            const targetPhone = SASHA_PHONE_NUMBER ? SASHA_PHONE_NUMBER : '';
+
+            const smsUrl = targetPhone 
+                ? `sms:${targetPhone}&body=${encodedText}` 
+                : `sms:?&body=${encodedText}`;
+
+            copySummaryToClipboard();
+            window.location.href = smsUrl;
+            showToast("Opening iMessage! (Itinerary copied to clipboard as backup)");
+        }
+
+        function copySummaryToClipboard() {
+            const summaryMessage = generateSummaryText();
+            const tempInput = document.createElement("textarea");
+            tempInput.value = summaryMessage;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast("Copied itinerary to clipboard!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }, 3200);
+        }
+
+        function restartApp() {
+            selectedDates = [];
+            selectedCuisines = [];
+            noClickCount = 0;
+            document.getElementById('restaurant-input').value = '';
+            document.getElementById('food-notes').value = '';
+            document.getElementById('custom-message-input').value = '';
+            
+            const btnNo = document.getElementById('btn-no');
+            btnNo.style.display = 'flex';
+            btnNo.style.transform = 'none';
+
+            scalePupils(0);
+            updateRigatoniReactionText();
+            updateSelectedDatesChips();
+            goToStep(1);
+        }
+    </script>
+</body>
+</html>
