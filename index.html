@@ -147,7 +147,7 @@
       <!-- Calendar Header -->
       <div class="bg-gray-800/80 rounded-2xl p-4 border border-gray-700/60 mb-6">
         <div class="flex items-center justify-between mb-4 px-2">
-          <span id="calendarMonthYear" class="text-base font-bold text-white">October 2026</span>
+          <span id="calendarMonthYear" class="text-base font-bold text-white">Month Year</span>
           <span class="text-xs text-gray-400">Dinner Time 🍷</span>
         </div>
 
@@ -343,6 +343,32 @@
     let spotType = 'specific'; // 'specific' or 'craving'
     let selectedCravings = [];
 
+    // Current Date tracking for dynamic calendar
+    const now = new Date();
+    const activeYear = now.getFullYear();
+    const activeMonth = now.getMonth(); // 0-indexed
+
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const monthAbbrs = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    // Dynamic Blackout Dates (Maps to current year & month)
+    const formattedMonthStr = (activeMonth + 1).toString().padStart(2, '0');
+    const blackoutComments = {
+      [`${activeYear}-${formattedMonthStr}-07`]: "Ooops, Sasha's frolicking this day! 💃",
+      [`${activeYear}-${formattedMonthStr}-08`]: "Sasha's busy conquering the world (or sleeping in) today! 🛌",
+      [`${activeYear}-${formattedMonthStr}-13`]: "Rigatoni vetoed this date — he's holding Sasha hostage for extra treats! 🦴🐾",
+      [`${activeYear}-${formattedMonthStr}-17`]: "Rigatoni says Sasha has top secret classified plans today! 🕵️",
+      [`${activeYear}-${formattedMonthStr}-23`]: "Sasha is off on an adventure this day! 🚀",
+      [`${activeYear}-${formattedMonthStr}-24`]: "Unavailable! Rigatoni booked Sasha for intensive belly rubs! 🐾"
+    };
+
     // Comments list for dynamic evasion steps
     const evasionComments = [
       "Choose wisely... Rigatoni is watching 👀",
@@ -356,16 +382,6 @@
       "Warning: 'No' button shrinking rapidly! ⚠️",
       "The button is practically gone... just tap YES!"
     ];
-
-    // Blackout Dates for October 2026
-    const blackoutComments = {
-      "2026-10-07": "Ooops, Sasha's frolicking this day! 💃",
-      "2026-10-08": "Sasha's busy conquering the world (or sleeping in) today! 🛌",
-      "2026-10-13": "Rigatoni vetoed this date — he's holding Sasha hostage for extra treats! 🦴🐾",
-      "2026-10-17": "Rigatoni says Sasha has top secret classified plans today! 🕵️",
-      "2026-10-23": "Sasha is off on an adventure this day! 🚀",
-      "2026-10-24": "Unavailable! Rigatoni booked Sasha for intensive belly rubs! 🐾"
-    };
 
     // Initialize Page
     document.addEventListener("DOMContentLoaded", () => {
@@ -447,16 +463,21 @@
       noBtn.addEventListener("click", handleNoAction);
     }
 
-    // Step 2: Calendar Generation
+    // Dynamic Calendar Generation
     function renderCalendar() {
       const grid = document.getElementById("calendarGrid");
       grid.innerHTML = "";
 
-      const startOffset = 4;
-      const totalDays = 31;
+      // Update Calendar Header Title
+      document.getElementById("calendarMonthYear").innerText = `${monthNames[activeMonth]} ${activeYear}`;
+
+      const firstDay = new Date(activeYear, activeMonth, 1);
+      const lastDay = new Date(activeYear, activeMonth + 1, 0);
+      
+      const startOffset = firstDay.getDay(); // 0 for Sunday
+      const totalDays = lastDay.getDate();
       const today = new Date();
-      const currentYear = 2026;
-      const currentMonth = 9;
+      const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
       for (let i = 0; i < startOffset; i++) {
         const emptyCell = document.createElement("div");
@@ -464,14 +485,14 @@
       }
 
       for (let day = 1; day <= totalDays; day++) {
-        const dateObj = new Date(currentYear, currentMonth, day);
-        const dateStr = `2026-10-${day.toString().padStart(2, '0')}`;
+        const dateObj = new Date(activeYear, activeMonth, day);
+        const dateStr = `${activeYear}-${formattedMonthStr}-${day.toString().padStart(2, '0')}`;
         
         const cell = document.createElement("button");
         cell.type = "button";
         cell.className = "h-10 text-xs font-semibold rounded-xl flex items-center justify-center transition relative";
 
-        const isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const isPast = dateObj < todayMidnight;
         const isBlackout = blackoutComments.hasOwnProperty(dateStr);
 
         if (isPast) {
@@ -557,7 +578,7 @@
     function updateSummary() {
       const datesText = selectedDates.map(d => {
         const [y, m, day] = d.split('-');
-        return `Oct ${parseInt(day)}`;
+        return `${monthAbbrs[parseInt(m) - 1]} ${parseInt(day)}`;
       }).join(", ");
 
       document.getElementById("summaryDates").innerText = datesText || "None selected";
@@ -572,7 +593,7 @@
 
       const formattedDates = selectedDates.map(d => {
         const [y, m, day] = d.split('-');
-        return `Oct ${parseInt(day)}, 2026`;
+        return `${monthAbbrs[parseInt(m) - 1]} ${parseInt(day)}, ${y}`;
       }).join(", ");
 
       const foodSummary = getFormattedFoodSummary();
